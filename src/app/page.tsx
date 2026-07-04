@@ -50,7 +50,11 @@ export default async function Home() {
             <ul className="text-sm text-gray-600 space-y-1">
               <li><span className="font-medium text-gray-900">이름:</span> {profile.name}</li>
               <li><span className="font-medium text-gray-900">연락처:</span> {profile.phone || '없음'}</li>
-              <li><span className="font-medium text-gray-900">NTRP:</span> {profile.ntrp || '없음'}</li>
+              <li><span className="font-medium text-gray-900">성별:</span> {profile.gender || '없음'}</li>
+              <li><span className="font-medium text-gray-900">출생연월:</span> {profile.birth_ym || '없음'}</li>
+              <li><span className="font-medium text-gray-900">지역:</span> {profile.region || '없음'}</li>
+              <li><span className="font-medium text-gray-900">시작일:</span> {profile.tennis_started_on || '없음'}</li>
+              <li><span className="font-medium text-gray-900">주사용손:</span> {profile.dominant_hand || '없음'}</li>
               <li><span className="font-medium text-gray-900">권한:</span> {profile.role}</li>
             </ul>
           </div>

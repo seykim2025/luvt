@@ -13,19 +13,30 @@ export async function submitOnboarding(formData: FormData) {
 
   const name = formData.get('name') as string
   const phone = formData.get('phone') as string
-  const ntrp = formData.get('ntrp') as string
+  const gender = formData.get('gender') as string
+  const birth_ym = formData.get('birth_ym') as string
+  const region = formData.get('region') as string
+  const tennis_started_on = formData.get('tennis_started_on') as string
+  const dominant_hand = formData.get('dominant_hand') as string
 
   if (!name || name.trim() === '') {
     return { error: '이름을 입력해주세요.' }
   }
+  if (!phone || phone.trim() === '') {
+    return { error: '연락처를 입력해주세요.' }
+  }
 
   const { error } = await supabase
     .from('profiles')
-    .insert({
+    .upsert({
       id: user.id,
       name: name.trim(),
-      phone: phone ? phone.trim() : null,
-      ntrp: ntrp ? ntrp.trim() : null,
+      phone: phone.trim(),
+      gender: gender || null,
+      birth_ym: birth_ym || null,
+      region: region || null,
+      tennis_started_on: tennis_started_on || null,
+      dominant_hand: dominant_hand || null,
       role: 'member'
     })
 

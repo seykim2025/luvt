@@ -62,28 +62,83 @@ export default function OnboardingPage() {
 
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-              연락처 (선택)
+              연락처 (필수)
             </label>
             <input
               id="phone"
               name="phone"
               type="tel"
+              required
               className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-black focus:ring-black sm:text-sm p-3 border"
               placeholder="010-1234-5678"
             />
           </div>
 
           <div>
-            <label htmlFor="ntrp" className="block text-sm font-medium text-gray-700">
-              NTRP (선택)
+            <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+              성별 (선택)
+            </label>
+            <select
+              id="gender"
+              name="gender"
+              className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-black focus:ring-black sm:text-sm p-3 border bg-white"
+            >
+              <option value="">선택 안함</option>
+              <option value="M">남성 (M)</option>
+              <option value="F">여성 (F)</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="birth_ym" className="block text-sm font-medium text-gray-700">
+              출생연월 (선택)
             </label>
             <input
-              id="ntrp"
-              name="ntrp"
+              id="birth_ym"
+              name="birth_ym"
+              type="month"
+              className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-black focus:ring-black sm:text-sm p-3 border"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="region" className="block text-sm font-medium text-gray-700">
+              주 활동 지역 (선택)
+            </label>
+            <input
+              id="region"
+              name="region"
               type="text"
               className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-black focus:ring-black sm:text-sm p-3 border"
-              placeholder="2.0 / 2.5 / 구력 1년 등"
+              placeholder="예: 서울 강남구"
             />
+          </div>
+
+          <div>
+            <label htmlFor="tennis_started_on" className="block text-sm font-medium text-gray-700">
+              테니스 시작일 (선택)
+            </label>
+            <input
+              id="tennis_started_on"
+              name="tennis_started_on"
+              type="date"
+              className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-black focus:ring-black sm:text-sm p-3 border"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="dominant_hand" className="block text-sm font-medium text-gray-700">
+              주 사용 손 (선택)
+            </label>
+            <select
+              id="dominant_hand"
+              name="dominant_hand"
+              className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-black focus:ring-black sm:text-sm p-3 border bg-white"
+            >
+              <option value="">선택 안함</option>
+              <option value="R">오른손</option>
+              <option value="L">왼손</option>
+            </select>
           </div>
 
           <button
