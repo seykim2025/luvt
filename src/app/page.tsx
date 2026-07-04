@@ -1,7 +1,8 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-
 import Image from 'next/image'
+import Link from 'next/link'
+import ParticipateButton from './components/ParticipateButton'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -24,48 +25,93 @@ export default async function Home() {
     redirect('/onboarding')
   }
 
-  return (
-    <div className="flex flex-col min-h-screen bg-gray-50 px-4 py-12">
-      <div className="w-full max-w-sm mx-auto space-y-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <header className="text-center">
-          <div className="flex justify-center mb-4">
-            <Image
-              src="/logo.jpg"
-              alt="LUV.T Logo"
-              width={80}
-              height={80}
-              priority
-              className="rounded-full"
-            />
-          </div>
-          <h1 className="sr-only">LUV.T OPEN</h1>
-          <p className="mt-2 text-sm text-gray-500">
-            환영합니다, {profile.name}님!
-          </p>
-        </header>
+  // 1. 오늘 날짜의 진행중/오픈 대회 확인
+  const { data: todayTournament } = await supabase
+    .from('tournaments')
+    .select('id, title, status')
+    .eq('event_date', new Date().toISOString().split('T')[0])
+    .in('status', ['open', 'ongoing'])
+    .single()
 
-        <div className="space-y-4">
-          <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-            <h2 className="text-sm font-semibold text-gray-700 mb-2">내 프로필 정보 (M1 확인용)</h2>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li><span className="font-medium text-gray-900">이름:</span> {profile.name}</li>
-              <li><span className="font-medium text-gray-900">연락처:</span> {profile.phone || '없음'}</li>
-              <li><span className="font-medium text-gray-900">성별:</span> {profile.gender || '없음'}</li>
-              <li><span className="font-medium text-gray-900">출생연월:</span> {profile.birth_ym || '없음'}</li>
-              <li><span className="font-medium text-gray-900">지역:</span> {profile.region || '없음'}</li>
-              <li><span className="font-medium text-gray-900">시작일:</span> {profile.tennis_started_on || '없음'}</li>
-              <li><span className="font-medium text-gray-900">주사용손:</span> {profile.dominant_hand || '없음'}</li>
-              <li><span className="font-medium text-gray-900">권한:</span> {profile.role}</li>
-            </ul>
+  // 2. 사용자의 오늘 대회 참가 여부 확인
+  let participationStatus: 'none' | 'pending' | 'approved' | 'rejected' = 'none'
+  if (todayTournament) {
+    const { data: participation } = await supabase
+      .from('participations')
+      .select('status')
+      .eq('tournament_id', todayTournament.id)
+      .eq('user_id', user.id)
+      .single()
+      
+    if (participation) {
+      participationStatus = participation.status as any
+    }
+  }
+
+  return (
+    <div className="flex flex-col min-h-screen bg-gray-50 pb-20">
+      <header className="bg-white px-4 py-4 flex justify-between items-center shadow-sm">
+        <Image
+          src="/logo.jpg"
+          alt="LUV.T Logo"
+          width={40}
+          height={40}
+          priority
+          className="rounded-full"
+        />
+        <h1 className="text-xl font-extrabold text-gray-900 tracking-tight">
+          LUV.T
+        </h1>
+        <form action="/auth/signout" method="POST">
+          <button className="text-sm font-medium text-gray-500 hover:text-gray-900">
+            로그아웃
+          </button>
+        </form>
+      </header>
+
+      <main className="flex-1 px-4 py-8 max-w-md w-full mx-auto space-y-8">
+        <section className="text-center space-y-2">
+          <p className="text-gray-500 font-medium">환영합니다!</p>
+          <h2 className="text-3xl font-bold text-gray-900">{profile.name}님</h2>
+        </section>
+
+        <section className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col items-center space-y-6">
+          <div className="w-full text-center">
+            {todayTournament ? (
+              <h3 className="text-lg font-semibold text-gray-800 mb-1">{todayTournament.title}</h3>
+            ) : (
+              <h3 className="text-lg font-medium text-gray-500 mb-1">오늘 진행되는 대회가 없습니다</h3>
+            )}
+            <p className="text-sm text-gray-500">
+              {new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' })}
+            </p>
           </div>
-          
-          <form action="/auth/signout" method="POST">
-            <button className="w-full text-sm text-gray-500 hover:text-gray-900 underline py-2">
-              로그아웃
-            </button>
-          </form>
-        </div>
-      </div>
+
+          <ParticipateButton 
+            status={participationStatus} 
+            disabledReason={!todayTournament ? '오늘 대회 없음' : undefined}
+          />
+        </section>
+
+        <nav className="grid grid-cols-2 gap-4">
+          <Link href="/me/records" className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center space-y-2 hover:bg-gray-50 active:scale-95 transition-all">
+            <span className="text-2xl">🏆</span>
+            <span className="text-sm font-semibold text-gray-800">내 참가 기록</span>
+          </Link>
+          <Link href="/me/benefits" className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center space-y-2 hover:bg-gray-50 active:scale-95 transition-all">
+            <span className="text-2xl">🎁</span>
+            <span className="text-sm font-semibold text-gray-800">내 혜택</span>
+          </Link>
+          <Link href="/partners" className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center space-y-2 hover:bg-gray-50 active:scale-95 transition-all">
+            <span className="text-2xl">🤝</span>
+            <span className="text-sm font-semibold text-gray-800">파트너 찾기</span>
+          </Link>
+          <Link href="/me" className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center space-y-2 hover:bg-gray-50 active:scale-95 transition-all">
+            <span className="text-2xl">👤</span>
+            <span className="text-sm font-semibold text-gray-800">내 프로필</span>
+          </Link>
+        </nav>
+      </main>
     </div>
   )
 }
