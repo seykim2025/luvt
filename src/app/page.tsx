@@ -98,6 +98,10 @@ export default async function Home() {
             <span className="text-2xl">🏆</span>
             <span className="text-sm font-semibold text-gray-800">내 참가 기록</span>
           </Link>
+          <Link href="/me/benefits" className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center space-y-2 hover:bg-gray-50 active:scale-95 transition-all">
+            <span className="text-2xl">🎁</span>
+            <span className="text-sm font-semibold text-gray-800">내 혜택</span>
+          </Link>
           <Link href="/hall-of-fame" className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center space-y-2 hover:bg-gray-50 active:scale-95 transition-all">
             <span className="text-2xl">👑</span>
             <span className="text-sm font-semibold text-gray-800">명예의 전당</span>
@@ -106,7 +110,7 @@ export default async function Home() {
             <span className="text-2xl">🤝</span>
             <span className="text-sm font-semibold text-gray-800">파트너 찾기</span>
           </Link>
-          <Link href="/me" className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center space-y-2 hover:bg-gray-50 active:scale-95 transition-all">
+          <Link href="/me" className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center space-y-2 hover:bg-gray-50 active:scale-95 transition-all col-span-2">
             <span className="text-2xl">👤</span>
             <span className="text-sm font-semibold text-gray-800">내 프로필</span>
           </Link>

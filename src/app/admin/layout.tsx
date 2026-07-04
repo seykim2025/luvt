@@ -41,6 +41,9 @@ export default async function AdminLayout({
           <Link href="/admin/checkin" className="hover:text-gray-300 transition-colors">
             오늘의 출석부
           </Link>
+          <Link href="/admin/benefits" className="hover:text-gray-300 transition-colors text-yellow-500">
+            혜택 관리
+          </Link>
           <Link href="/" className="hover:text-gray-300 transition-colors">
             앱으로
           </Link>
