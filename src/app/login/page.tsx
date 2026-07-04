@@ -3,6 +3,8 @@
 import { createClient } from '@/utils/supabase/client'
 import { useState } from 'react'
 
+import Image from 'next/image'
+
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
@@ -27,9 +29,17 @@ export default function LoginPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
       <div className="w-full max-w-sm space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            LUV.T OPEN
-          </h1>
+          <div className="flex justify-center mb-2">
+            <Image
+              src="/logo.jpg"
+              alt="LUV.T Logo"
+              width={120}
+              height={120}
+              priority
+              className="rounded-full"
+            />
+          </div>
+          <h1 className="sr-only">LUV.T OPEN</h1>
           <p className="mt-2 text-sm text-gray-600">
             테니스 대회 멤버십에 로그인하세요.
           </p>

@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { submitOnboarding } from './actions'
 
+import Image from 'next/image'
+
 export default function OnboardingPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -20,7 +22,17 @@ export default function OnboardingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 px-4 py-12">
       <div className="w-full max-w-sm mx-auto space-y-8">
-        <div>
+        <div className="text-center">
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/logo.jpg"
+              alt="LUV.T Logo"
+              width={64}
+              height={64}
+              priority
+              className="rounded-full"
+            />
+          </div>
           <h1 className="text-2xl font-bold text-gray-900">환영합니다! 🎉</h1>
           <p className="mt-2 text-gray-600">
             원활한 대회 진행을 위해 간단한 프로필을 입력해 주세요.

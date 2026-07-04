@@ -1,6 +1,8 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 
+import Image from 'next/image'
+
 export default async function Home() {
   const supabase = await createClient()
 
@@ -26,9 +28,17 @@ export default async function Home() {
     <div className="flex flex-col min-h-screen bg-gray-50 px-4 py-12">
       <div className="w-full max-w-sm mx-auto space-y-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <header className="text-center">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            LUV.T OPEN
-          </h1>
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/logo.jpg"
+              alt="LUV.T Logo"
+              width={80}
+              height={80}
+              priority
+              className="rounded-full"
+            />
+          </div>
+          <h1 className="sr-only">LUV.T OPEN</h1>
           <p className="mt-2 text-sm text-gray-500">
             환영합니다, {profile.name}님!
           </p>
