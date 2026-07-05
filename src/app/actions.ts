@@ -152,3 +152,71 @@ export async function redeemBenefit(redemptionId: string) {
   revalidatePath('/me/benefits')
   return { ok: true }
 }
+
+export async function createInquiry(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: '로그인이 필요합니다.' }
+
+  const category = formData.get('category') as string
+  const content = formData.get('content') as string
+
+  if (!content || content.trim() === '') {
+    return { ok: false, error: '내용을 입력해주세요.' }
+  }
+
+  const { error } = await supabase
+    .from('inquiries')
+    .insert({
+      user_id: user.id,
+      category: category === 'report' ? 'report' : 'general',
+      content: content.trim()
+    })
+
+  if (error) {
+    console.error('Create inquiry error:', error)
+    return { ok: false, error: '문의 등록 중 오류가 발생했습니다.' }
+  }
+
+  revalidatePath('/inquiry')
+  return { ok: true }
+}
+
+export async function replyInquiry(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: '로그인이 필요합니다.' }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.role !== 'admin') {
+    return { ok: false, error: '관리자 권한이 없습니다.' }
+  }
+
+  const id = formData.get('id') as string
+  const reply = formData.get('reply') as string
+
+  if (!id || !reply || reply.trim() === '') {
+    return { ok: false, error: '답변 내용을 입력해주세요.' }
+  }
+
+  const { error } = await supabase
+    .from('inquiries')
+    .update({
+      reply: reply.trim(),
+      replied_at: new Date().toISOString()
+    })
+    .eq('id', id)
+
+  if (error) {
+    console.error('Reply inquiry error:', error)
+    return { ok: false, error: '답변 등록 중 오류가 발생했습니다.' }
+  }
+
+  revalidatePath('/admin/boards')
+  return { ok: true }
+}
