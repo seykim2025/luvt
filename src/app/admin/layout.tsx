@@ -47,6 +47,12 @@ export default async function AdminLayout({
           <Link href="/admin/boards" className="hover:text-gray-300 transition-colors">
             게시판 관리
           </Link>
+          <Link href="/admin/notices" className="hover:text-gray-300 transition-colors">
+            공지 관리
+          </Link>
+          <Link href="/admin/results" className="hover:text-gray-300 transition-colors">
+            결과 관리
+          </Link>
           <Link href="/" className="hover:text-gray-300 transition-colors">
             앱으로
           </Link>

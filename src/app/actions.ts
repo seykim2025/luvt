@@ -220,3 +220,82 @@ export async function replyInquiry(formData: FormData) {
   revalidatePath('/admin/boards')
   return { ok: true }
 }
+
+export async function createNotice(formData: FormData) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: '로그인이 필요합니다.' }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.role !== 'admin') {
+    return { ok: false, error: '관리자 권한이 없습니다.' }
+  }
+
+  const title = formData.get('title') as string
+  const content = formData.get('content') as string
+  const target = formData.get('target') as 'all' | 'selected'
+  const targetUserIdsStr = formData.get('targetUserIds') as string
+
+  if (!title || !content) {
+    return { ok: false, error: '제목과 내용을 입력해주세요.' }
+  }
+
+  let target_user_ids: string[] | null = null
+  if (target === 'selected') {
+    if (!targetUserIdsStr) return { ok: false, error: '선택된 유저가 없습니다.' }
+    target_user_ids = targetUserIdsStr.split(',').map(id => id.trim()).filter(id => id.length > 0)
+  }
+
+  const { error } = await supabase
+    .from('notices')
+    .insert({
+      title: title.trim(),
+      content: content.trim(),
+      target,
+      target_user_ids,
+      created_by: user.id
+    })
+
+  if (error) {
+    console.error('Create notice error:', error)
+    return { ok: false, error: '공지 등록 중 오류가 발생했습니다.' }
+  }
+
+  revalidatePath('/admin/notices')
+  revalidatePath('/notices')
+  return { ok: true }
+}
+
+export async function updateFinalResult(participationId: string, finalResult: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: '로그인이 필요합니다.' }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (profile?.role !== 'admin') {
+    return { ok: false, error: '관리자 권한이 없습니다.' }
+  }
+
+  const { error } = await supabase
+    .from('participations')
+    .update({ final_result: finalResult || null })
+    .eq('id', participationId)
+
+  if (error) {
+    console.error('Update result error:', error)
+    return { ok: false, error: '성적 업데이트 중 오류가 발생했습니다.' }
+  }
+
+  revalidatePath('/admin/results')
+  return { ok: true }
+}

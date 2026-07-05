@@ -110,20 +110,29 @@ export default async function RecordsPage() {
                 let statusBadge = ''
                 
                 if (p.status === 'approved') {
-                  statusBadge = '<span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-md">승인됨</span>'
+                  statusBadge = '<span class="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-md">승인됨</span>'
                 } else if (p.status === 'pending') {
-                  statusBadge = '<span className="text-xs font-semibold text-yellow-600 bg-yellow-50 px-2 py-1 rounded-md">대기중</span>'
+                  statusBadge = '<span class="text-xs font-semibold text-yellow-600 bg-yellow-50 px-2 py-1 rounded-md">대기중</span>'
                 } else if (p.status === 'rejected') {
-                  statusBadge = '<span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-md">거절됨</span>'
+                  statusBadge = '<span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-md">거절됨</span>'
                 }
 
                 return (
-                  <div key={p.id} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
-                    <div>
-                      <p className="text-xs text-gray-400 mb-1">{tournamentDate}</p>
-                      <h3 className="font-semibold text-gray-900">{p.tournaments.title}</h3>
+                  <div key={p.id} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-xs text-gray-400 mb-1">{tournamentDate}</p>
+                        <h3 className="font-semibold text-gray-900">{p.tournaments.title}</h3>
+                      </div>
+                      <div dangerouslySetInnerHTML={{ __html: statusBadge }} />
                     </div>
-                    <div dangerouslySetInnerHTML={{ __html: statusBadge }} />
+                    {p.final_result && (
+                      <div className="bg-blue-50 border border-blue-100 rounded-lg p-2 flex items-center justify-center">
+                        <span className="text-sm font-bold text-blue-800">
+                          🎉 {p.final_result}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )
               })}

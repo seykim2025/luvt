@@ -98,6 +98,13 @@ export default async function MyProfilePage() {
             </div>
             <span className="text-gray-300">›</span>
           </Link>
+          <Link href="/notices" className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 border-b border-gray-50 transition-colors">
+            <div className="flex items-center space-x-3">
+              <span className="text-xl">📢</span>
+              <span className="font-medium text-gray-800">공지사항</span>
+            </div>
+            <span className="text-gray-300">›</span>
+          </Link>
           <Link href="/inquiry" className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors">
             <div className="flex items-center space-x-3">
               <span className="text-xl">💬</span>
