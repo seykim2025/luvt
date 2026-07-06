@@ -5,17 +5,27 @@ import { submitOnboarding } from './actions'
 
 import Image from 'next/image'
 
+import { useRouter } from 'next/navigation'
+
 export default function OnboardingPage() {
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  async function handleSubmit(formData: FormData) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
     setLoading(true)
     setError(null)
+    
+    const formData = new FormData(e.currentTarget)
     const result = await submitOnboarding(formData)
+    
     if (result?.error) {
       setError(result.error)
       setLoading(false)
+    } else if (result?.success) {
+      router.refresh()
+      router.replace('/')
     }
   }
 
@@ -39,7 +49,7 @@ export default function OnboardingPage() {
           </p>
         </div>
 
-        <form action={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
             <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg">
               {error}
