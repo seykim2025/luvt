@@ -11,18 +11,41 @@ export async function participateToday() {
     return { ok: false, error: '로그인이 필요합니다.' }
   }
 
-  // Call the check_in_today RPC defined in the database
-  const { data, error } = await supabase.rpc('check_in_today')
+  // 1. KST 날짜 기준 진행중/오픈 대회 찾기
+  const kstDate = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString().split('T')[0];
+  const { data: todayTournament } = await supabase
+    .from('tournaments')
+    .select('id, status')
+    .eq('event_date', kstDate)
+    .in('status', ['open', 'ongoing'])
+    .single()
+
+  if (!todayTournament) {
+    return { ok: false, error: '오늘 참가 가능한 대회가 없습니다.' }
+  }
+
+  // 2. 참가 접수
+  const { error } = await supabase
+    .from('participations')
+    .insert({
+      tournament_id: todayTournament.id,
+      user_id: user.id,
+      status: 'pending',
+      source: 'self'
+    })
   
   if (error) {
     console.error('Participation error:', error)
+    if (error.code === '23505') {
+      return { ok: false, error: '이미 참가 신청이 접수되었습니다.' }
+    }
     return { ok: false, error: '참가 접수 중 오류가 발생했습니다.' }
   }
 
   // Revalidate the home page to reflect the new state
   revalidatePath('/')
   
-  return data
+  return { ok: true, message: '참가 접수됨 (관리자 확인 대기)' }
 }
 
 export async function createPartnerPost(formData: FormData) {

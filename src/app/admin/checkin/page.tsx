@@ -4,11 +4,12 @@ import CheckinForm from './CheckinForm'
 export default async function CheckinPage() {
   const supabase = await createClient()
 
-  // 1. 오늘 열린 대회 찾기
+  // 1. 오늘 열린 대회 찾기 (KST 기준)
+  const kstDate = new Date(new Date().getTime() + 9 * 60 * 60 * 1000).toISOString().split('T')[0];
   const { data: todayTournament } = await supabase
     .from('tournaments')
     .select('id, title, status')
-    .eq('event_date', new Date().toISOString().split('T')[0])
+    .eq('event_date', kstDate)
     .in('status', ['open', 'ongoing'])
     .single()
 
